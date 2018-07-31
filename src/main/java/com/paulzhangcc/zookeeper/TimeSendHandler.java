@@ -47,9 +47,9 @@ public class TimeSendHandler extends SimpleChannelInboundHandler<String> {
             timer.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    channel.writeAndFlush("nihao>");
+                    channel.writeAndFlush("nihao\r\n");
                 }
-            }, 1000, 1000, TimeUnit.MILLISECONDS);
+            }, 1000, 2000, TimeUnit.MILLISECONDS);
         }
         ctx.fireChannelRead(msg);
     }
