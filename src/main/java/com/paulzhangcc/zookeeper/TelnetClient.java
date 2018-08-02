@@ -20,12 +20,11 @@ public class TelnetClient {
     public static void main(String args[]) throws Exception {
 
         SocketChannel clntChan = SocketChannel.open();
-        clntChan.configureBlocking(false);
+
         //向服务端发起连接
-        if (!clntChan.connect(new InetSocketAddress("127.0.0.1", 22222))) {
-            //不断地轮询连接状态，直到完成连接
-            clntChan.finishConnect();
-        }
+        clntChan.connect(new InetSocketAddress("127.0.0.1", 22222));
+        clntChan.finishConnect();
+        //clntChan.configureBlocking(false);
         //分别实例化用来读写的缓冲区
         ByteBuffer resposneBuffer = ByteBuffer.allocateDirect(4 * 1024);
         ByteBuffer requestBuffer = ByteBuffer.allocateDirect(4 * 1024);
@@ -42,9 +41,11 @@ public class TelnetClient {
                         requestBuffer.put((byte) '\r');
                         requestBuffer.put((byte) '\n');
                         requestBuffer.flip();
-                        clntChan.write(requestBuffer);
+                        while (requestBuffer.hasRemaining()){
+                            clntChan.write(requestBuffer);
+                        }
                         requestBuffer.clear();
-                        System.out.println("向远程发送数据:" + takeRequest);
+                        System.out.println("send:" + takeRequest);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (IOException e1) {
@@ -68,9 +69,8 @@ public class TelnetClient {
                             byte temp[]=new byte[bytesRcvd];
                             resposneBuffer.get(temp);
                             resposneBuffer.clear();
-
                             String s = new String(temp);
-                            System.out.println("收到的内容为:"+s);
+                            System.out.println("receive:"+s);
                             temp = null;
                         }
                     }catch (IOException e){

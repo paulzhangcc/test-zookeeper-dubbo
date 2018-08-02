@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,10 +22,18 @@ public class TelnetNioClient {
 
         ByteBuffer resposneBuffer = ByteBuffer.allocateDirect(4 * 1024);
         SocketChannel clntChan = SocketChannel.open();
+
+
         clntChan.configureBlocking(false);
-        Selector selector = Selector.open();
-        clntChan.register(selector, SelectionKey.OP_CONNECT);
         clntChan.connect(new InetSocketAddress("127.0.0.1", 22222));
+        //注意和下面内容的区别 先连接后configureBlocking 不会有OP_CONNECT事件
+        //clntChan.connect(new InetSocketAddress("127.0.0.1", 22222));
+        //clntChan.configureBlocking(false);
+
+        Selector selector = Selector.open();
+
+        //检查configureBlocking的状态
+        clntChan.register(selector, SelectionKey.OP_CONNECT);
 
         System.out.println("===============");
         while (true) {
@@ -49,6 +58,7 @@ public class TelnetNioClient {
                         try {
                             int bytesRcvd = 0;
                             StringBuffer stringBuffer = new StringBuffer();
+                            //如果resposneBuffer定义的小，就需要是用while不断的进行去read
                             if ((bytesRcvd = clntChan.read(resposneBuffer)) > 0) {
                                 resposneBuffer.flip();
                                 byte temp[] = new byte[bytesRcvd];
@@ -64,9 +74,12 @@ public class TelnetNioClient {
                         }
                     }
                     if (next.isWritable()) {
-//                        ByteBuffer wrap = ByteBuffer.wrap("ls\r\n".getBytes(Charset.forName("UTF-8")));
-//                        clntChan.write(wrap);
-//                        wrap = null;
+                        ByteBuffer wrap = ByteBuffer.wrap("ls\r\n".getBytes(Charset.forName("UTF-8")));
+                        while (wrap.hasRemaining()){
+                            clntChan.write(wrap);
+                        }
+                        wrap.clear();
+                        wrap = null;
                     }
                 } else if (next.isValid()) {
                     System.out.println("@@@@@@:isValid" + selectionKeys);
@@ -75,6 +88,10 @@ public class TelnetNioClient {
             }
 
         }
+
+        //selector.close();
+        //clntChan.close();
+
 
     }
 }
