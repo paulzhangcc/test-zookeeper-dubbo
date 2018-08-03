@@ -8,9 +8,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static io.netty.handler.codec.http.HttpHeaders.Names.TRANSFER_ENCODING;
+import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpHeaders.Values.CHUNKED;
 import static io.netty.handler.codec.http.HttpHeaders.Values.KEEP_ALIVE;
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
@@ -59,13 +57,21 @@ public class TestServerKeepalive {
                 headers.add(TRANSFER_ENCODING, CHUNKED);
                 //headers.add(CONTENT_LENGTH, 12 * 10);//+1的原因是最后一个分块的10占两个字节
             }
+
+            byte[] body = new byte[fullHttpRequest.content().readableBytes()];
+
+            fullHttpRequest.content().getBytes(0, body);
+            System.out.println(ctx.channel()+":请求的内容:"+ new String(body));
+            body=null;
             ctx.writeAndFlush(response);//写响应行和响应头
-            System.out.println("返回响应头和行==="+ctx.channel());
+
+            System.out.println(ctx.channel()+":响应头和行===");
             for (int i = 1; i < 3; i++) {
                 HttpContent httpContent = new DefaultHttpContent(Unpooled.copiedBuffer("zjf" + i, CharsetUtil.UTF_8));
                 ctx.writeAndFlush(httpContent);//分批次写响应体，每次运行完此行代码，浏览器页面也会显示最新的响应内容
             }
-            ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT).addListener(ChannelFutureListener.CLOSE);
+            ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT)
+                    ;//.addListener(ChannelFutureListener.CLOSE);
         }
 
         @Override

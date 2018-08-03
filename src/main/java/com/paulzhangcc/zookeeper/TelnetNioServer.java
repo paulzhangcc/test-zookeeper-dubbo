@@ -67,7 +67,7 @@ public class TelnetNioServer {
                                 String s = new String(temp);
                                 System.out.println("收到的内容为:" + s);
                                 temp = null;
-                                responseQueue.get(next).put("@@@@@:" + s);
+                                responseQueue.get(next).put("@@@@@:" + s.trim());
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
