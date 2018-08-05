@@ -29,11 +29,13 @@ public class TelnetNioServer {
         ByteBuffer requestBuffer = ByteBuffer.allocateDirect(4 * 1024);
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
-        serverSocketChannel.bind(new InetSocketAddress("127.0.0.1", 22222));
 
         Selector selector = Selector.open();
 
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        serverSocketChannel.bind(new InetSocketAddress("127.0.0.1", 22222));
+
+
         while (true) {
             int select = selector.select(TimeUnit.SECONDS.toMillis(5));
             if (select == 0) {

@@ -19,15 +19,15 @@ public class TelnetClient {
 
     public static void main(String args[]) throws Exception {
 
-        SocketChannel clntChan = SocketChannel.open();
+        final SocketChannel clntChan = SocketChannel.open();
 
         //向服务端发起连接
         clntChan.connect(new InetSocketAddress("127.0.0.1", 22222));
         clntChan.finishConnect();
         //clntChan.configureBlocking(false);
         //分别实例化用来读写的缓冲区
-        ByteBuffer resposneBuffer = ByteBuffer.allocateDirect(4 * 1024);
-        ByteBuffer requestBuffer = ByteBuffer.allocateDirect(4 * 1024);
+        final ByteBuffer resposneBuffer = ByteBuffer.allocateDirect(4 * 1024);
+        final ByteBuffer requestBuffer = ByteBuffer.allocateDirect(4 * 1024);
 
         Thread writeThread = new Thread(new Runnable() {
             @Override
