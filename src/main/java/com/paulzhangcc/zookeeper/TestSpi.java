@@ -17,7 +17,6 @@ import com.alibaba.dubbo.rpc.cluster.Cluster;
 public class TestSpi {
     public static void main(String[] args) {
         ExtensionFactory extensionFactory = ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension();
-
         Cluster cluster = ExtensionLoader.getExtensionLoader(Cluster.class).getAdaptiveExtension();
         ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 

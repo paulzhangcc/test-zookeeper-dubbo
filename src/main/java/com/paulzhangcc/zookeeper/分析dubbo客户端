@@ -1,0 +1,24 @@
+
+refer:
+	application=HELLO&dubbo=2.6.2&interface=com.paulzhangcc.zookeeper.HelloService&methods=ping&pid=34384&register.ip=192.168.181.1&revision=1.0.0&side=consumer&timestamp=1533776888962&version=1.0.0
+
+registry://127.0.0.1:2181/com.alibaba.dubbo.registry.RegistryService?application=HELLO&dubbo=2.6.2&pid=34384&registry=zookeeper&timestamp=1533777018750&refer=?
+
+
+第一步获取 com.alibaba.dubbo.rpc.Protocol.class registry
+	得到链式协议:
+		ProtocolListenerWrapper  如果是registry协议直接继续
+		ProtocolFilterWrapper    如果是registry协议直接继续
+		QosProtocolWrapper       如果是registry协议startQosServer直接继续
+		RegistryProtocol         获取registry参数得到zookeeper，使得protocol=zookeeper
+
+		registryFactory.getRegistry(url) 获取注册中心实例并连接zookeeper
+		url == zookeeper://127.0.0.1:2181/com.alibaba.dubbo.registry.RegistryService?application=HELLO&dubbo=2.6.2&interface=com.alibaba.dubbo.registry.RegistryService&pid=43888&timestamp=1533778451510
+
+		RegistryDirectory.register:consumer://192.168.181.1/com.paulzhangcc.zookeeper.HelloService?application=HELLO&category=consumers&check=false&dubbo=2.6.2&interface=com.paulzhangcc.zookeeper.HelloService&methods=ping&pid=43888&revision=1.0.0&side=consumer&timestamp=1533778444563&version=1.0.0
+
+		RegistryDirectory 订阅：consumer://192.168.181.1/com.paulzhangcc.zookeeper.HelloService?application=HELLO&category=providers,configurators,routers&dubbo=2.6.2&interface=com.paulzhangcc.zookeeper.HelloService&methods=ping&pid=43888&revision=1.0.0&side=consumer&timestamp=1533778444563&version=1.0.0
+
+		RegistryDirectory notify
+
+		创建MockClusterInvoker 包装 FailoverCluster

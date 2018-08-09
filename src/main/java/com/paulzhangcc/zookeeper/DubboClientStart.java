@@ -1,8 +1,12 @@
 package com.paulzhangcc.zookeeper;
 
+import com.alibaba.dubbo.common.extension.ExtensionFactory;
+import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.rpc.ProxyFactory;
+import com.alibaba.dubbo.rpc.cluster.Cluster;
 
 /**
  * @author paul
@@ -11,6 +15,10 @@ import com.alibaba.dubbo.config.RegistryConfig;
  */
 public class DubboClientStart {
     public static void main(String[] args) throws InterruptedException {
+        ExtensionFactory extensionFactory = ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension();
+        Cluster cluster = ExtensionLoader.getExtensionLoader(Cluster.class).getAdaptiveExtension();
+        ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
+
         ApplicationConfig application = new ApplicationConfig();
         application.setName("HELLO");
 
