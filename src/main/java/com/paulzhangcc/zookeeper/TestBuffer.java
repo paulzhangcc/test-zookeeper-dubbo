@@ -8,6 +8,9 @@ import java.nio.ByteBuffer;
  * @date 2018/7/31
  */
 public class TestBuffer {
+    static {
+        System.out.println("nihao");
+    }
     public static void main(String[] args) {
         ByteBuffer writeBuf = ByteBuffer.allocateDirect(1* 1024);
         writeBuf.put("nihao".getBytes());
