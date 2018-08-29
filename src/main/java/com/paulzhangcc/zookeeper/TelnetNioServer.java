@@ -36,6 +36,8 @@ public class TelnetNioServer {
         serverSocketChannel.bind(new InetSocketAddress("127.0.0.1", 22222));
 
 
+
+
         while (true) {
             int select = selector.select(TimeUnit.SECONDS.toMillis(5));
             if (select == 0) {

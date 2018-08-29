@@ -22,7 +22,7 @@ public class QosServerTest {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(boss, worker);
         serverBootstrap.channel(NioServerSocketChannel.class);
-        serverBootstrap.handler(new LoggerChannelHandler());
+        //serverBootstrap.handler(new LoggerChannelHandler());
         serverBootstrap.childOption(ChannelOption.TCP_NODELAY, true);
         serverBootstrap.childOption(ChannelOption.SO_REUSEADDR, true);
         serverBootstrap.childHandler(new ChannelInitializer<Channel>() {
@@ -30,7 +30,7 @@ public class QosServerTest {
             protected void initChannel(Channel ch) throws Exception {
                 System.out.println(Thread.currentThread().getName()+"=====================initChannel===="+ch+"  channel="+ch.getClass().getSimpleName());
                 //ch.pipeline().addLast(new LineBasedFrameDecoder(2048));
-                ch.pipeline().addLast(new ClientLoggerChannelHandler());
+                //ch.pipeline().addLast(new ClientLoggerChannelHandler());
                 ch.pipeline().addLast(new MyQosProcessHandler("", true));
             }
         });
